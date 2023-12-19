@@ -6,7 +6,7 @@
             <div class="col-lg-10">
                 <div class="card">
                     <div class="card-header bg-primary">
-                        <router-link class="btn btn-light btn-sm px-3 py-2" :to="{name: 'product.create'}">
+                        <router-link class="btn btn-light btn-sm px-3 py-2" :to="{name: 'product.form', params: {id : 0}}">
                             <b>Add Product</b>
                         </router-link>
                     </div>
@@ -27,9 +27,11 @@
                                     <td>{{ index+1 }}</td>
                                     <td>{{ product.category_name }}</td>
                                     <td>{{ product.name }}</td>
-                                    <td>{{ product.buyprice }}</td>
-                                    <td>{{ product.sellprice }}</td>
-                                    <td></td>
+                                    <td>{{ formatToRupiah(product.buyprice) }}</td>
+                                    <td>{{ formatToRupiah(product.sellprice) }}</td>
+                                    <td>
+                                        <router-link class="btn btn-primary" :to="{name: 'product.form', params: {id: product.id }}">Edit</router-link>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -59,6 +61,14 @@ export default {
             if(response.status == 200){
                 this.products = response.data.data;
             }
+        },
+         formatToRupiah(number) {
+            const formattedNumber = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR'
+            }).format(number);
+
+            return formattedNumber;
         }
     }
 }

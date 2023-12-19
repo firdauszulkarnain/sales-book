@@ -2,7 +2,7 @@
 import Dashboard from '../pages/Dashboard'
 import Category from '../pages/category/Category'
 import Product from '../pages/product/Product'
-import CreateProduct from '../pages/product/CreateProduct'
+import ProductForm from '../pages/product/Form'
 import Sales from '../pages/Sales'
 
 export default {
@@ -25,9 +25,10 @@ export default {
             component: Product,
         },
         {
-            path: '/product/create',
-            name: 'product.create',
-            component: CreateProduct,
+            path: '/product/form/:id',
+            name: 'product.form',
+            component: ProductForm,
+            props:true
         },
         {
             path: '/sales',

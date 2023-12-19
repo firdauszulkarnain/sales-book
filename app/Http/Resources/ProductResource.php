@@ -11,10 +11,11 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'category_id' => $this->category->id,
             'category_name' => $this->category->name,
             'name' => $this->pd_name,
-            'buyprice' => number_format($this->pd_buyprice, 0, ',', '.'),
-            'sellprice' =>  number_format($this->pd_sellprice, 0, ',', '.'),
+            'buyprice' => $this->pd_buyprice,
+            'sellprice' =>  $this->pd_sellprice,
             'desc' => $this->pd_desc,
             'created_at' => $this->created_at->format('d-m-Y'),
         ];
