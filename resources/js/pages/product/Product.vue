@@ -11,15 +11,27 @@
                         </router-link>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
                                     <th scope="col">No</th>
+                                    <th scope="col">Category</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Created at</th>
+                                    <th scope="col">Buyprice</th>
+                                    <th scope="col">Sellprice</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                <tr class="text-capitalize" v-for="(product, index) in products" :key="product.id">
+                                    <td>{{ index+1 }}</td>
+                                    <td>{{ product.category_name }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.buyprice }}</td>
+                                    <td>{{ product.sellprice }}</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -32,6 +44,22 @@
 
 <script>
 export default {
+    data(){
+        return {
+            products: []
+        }
+    },
+    mounted(){
+        this.getProducts()
+    },
 
+    methods:{
+        async getProducts(){
+           let response = await axios.get('/api/product');
+            if(response.status == 200){
+                this.products = response.data.data;
+            }
+        }
+    }
 }
 </script>

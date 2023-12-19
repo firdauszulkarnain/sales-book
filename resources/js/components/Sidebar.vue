@@ -6,7 +6,7 @@
 
         <hr class="sidebar-divider my-0">
 
-        <li :class="['nav-item',{active: isActive('/')}]">
+        <li class="nav-item">
             <router-link class="nav-link" exact :to="{name: 'dashboard'}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span>
@@ -19,14 +19,14 @@
             Master Data
         </div>
 
-        <li :class="['nav-item',{active: isActive('/category')}]">
+        <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'category'}">
                 <i class="fas fa-fw fa-th-large"></i>
                 <span>Category</span>
             </router-link>
         </li>
 
-        <li :class="['nav-item',{active: isActive('/product')}]">
+        <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'product'}">
                 <i class="fas fa-fw fa-th-large"></i>
                 <span>Product</span>
