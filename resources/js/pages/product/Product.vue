@@ -31,6 +31,7 @@
                                     <td>{{ formatToRupiah(product.sellprice) }}</td>
                                     <td>
                                         <router-link class="btn btn-primary" :to="{name: 'product.form', params: {id: product.id }}">Edit</router-link>
+                                         <a class="btn btn-danger" @click.prevent="delProduct(product.id)">Hapus</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -62,6 +63,27 @@ export default {
                 this.products = response.data.data;
             }
         },
+
+        async delProduct(id){
+           try {
+             let response = await axios.delete('/api/product/'+id);
+                if(response.status == 200){
+                    this.$toasted.show(response.data.message,{
+                        type: 'success',
+                        duration: 3000
+                    });
+                    this.getProducts();
+                }
+           } catch (e) {
+                console.log(e);
+                this.$toasted.show('Error Delete Data',{
+                    type: 'error',
+                    duration: 3000
+                });
+           }
+
+        },
+
          formatToRupiah(number) {
             const formattedNumber = new Intl.NumberFormat('id-ID', {
                 style: 'currency',

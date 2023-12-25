@@ -44,9 +44,13 @@ class ProductController extends Controller
     }
 
     
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        //
+        Product::where('id', $product->id)->delete();
+        return response()->json([
+            'message' => 'Product Successfully Deleted!',
+            'data' => $product
+        ]);
     }
 
     protected function validateData(Request $request){

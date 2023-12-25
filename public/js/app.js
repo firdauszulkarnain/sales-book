@@ -5739,6 +5739,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5769,6 +5770,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               return _context.stop();
           }
         }, _callee);
+      }))();
+    },
+    delProduct: function delProduct(id) {
+      var _this2 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              _context2.next = 3;
+              return axios["delete"]('/api/product/' + id);
+            case 3:
+              response = _context2.sent;
+              if (response.status == 200) {
+                _this2.$toasted.show(response.data.message, {
+                  type: 'success',
+                  duration: 3000
+                });
+                _this2.getProducts();
+              }
+              _context2.next = 11;
+              break;
+            case 7:
+              _context2.prev = 7;
+              _context2.t0 = _context2["catch"](0);
+              console.log(_context2.t0);
+              _this2.$toasted.show('Error Delete Data', {
+                type: 'error',
+                duration: 3000
+              });
+            case 11:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2, null, [[0, 7]]);
       }))();
     },
     formatToRupiah: function formatToRupiah(number) {
@@ -29348,6 +29385,20 @@ var render = function () {
                                 },
                               },
                               [_vm._v("Edit")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-danger",
+                                on: {
+                                  click: function ($event) {
+                                    $event.preventDefault()
+                                    return _vm.delProduct(product.id)
+                                  },
+                                },
+                              },
+                              [_vm._v("Hapus")]
                             ),
                           ],
                           1
