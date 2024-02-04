@@ -8,7 +8,7 @@
          <div class="col-lg-10">
             <div class="card">
                <div class="card-header bg-primary">
-                  <button type="button" class="btn btn-light btn-sm px-3 py-2" @click.prevent="openModal">
+                  <button type="button" class="btn btn-light btn-sm px-3 py-2" @click.prevent="openModal('0')">
                      <b>Add Category</b>
                   </button>
                </div>
@@ -28,7 +28,7 @@
                            <td>{{ category.name }}</td>
                            <td>{{ category.created_at }}</td>
                            <td>
-                              <a class="btn btn-primary">Edit</a>
+                              <a class="btn btn-primary" @click.prevent="openModal(category.id)">Edit</a>
                               <a class="btn btn-danger" @click.prevent="deleteCategory(category.id)">Hapus</a>
                            </td>
                         </tr>
@@ -50,6 +50,7 @@
                </div>
                <form action="" method="POST" @submit.prevent="submit">
                   <div class="modal-body">
+                     <input type="hidden" name="id" v-model="form.id">
                      <div class="form-group">
                         <label for="name">Category Name</label>
                         <input type="text" class="form-control" id="name" autocomplete="off" v-model="form.name">
@@ -72,6 +73,7 @@ export default {
       return {
          categories : [],
          form: {
+            id : '',
             name: '',
          },
          error: [],
@@ -93,7 +95,13 @@ export default {
       async submit(){
          console.log(this.form);
          try{
-            let response = await axios.post('/api/category', this.form)
+            let response;
+            if(this.form.id == '0'){
+               response = await axios.post('/api/category', this.form);
+            }else{
+               console.log('updated');
+               response = await axios.put('/api/category/'+this.form.id, this.form);
+            }
             if(response.status == 200){
                this.error = [];
                this.$toasted.show(response.data.message,{
@@ -113,7 +121,12 @@ export default {
          }
       },
 
-      openModal() {
+      openModal(id) {
+         if(id !== '0'){
+            this.showCategory(id);
+         }else{
+            this.form.id = id;
+         }
          $(this.$refs.addModal).modal('show');
       },
 
@@ -138,7 +151,19 @@ export default {
                duration: 3000
             });
          }
-      }
-   }
+      },
+      async showCategory(id){
+         let response = await axios.get('/api/category/'+id);
+         if(response.status == 200){
+            console.log(response);
+            this.form = {
+               id: response.data.data.id,
+               name: response.data.data.name
+            }
+         }
+      },
+   },
+
+   
 }
 </script>

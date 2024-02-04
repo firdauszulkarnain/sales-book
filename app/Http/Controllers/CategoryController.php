@@ -16,13 +16,11 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData =  $request->validate([
             'name' => 'required'
         ]);
 
-        $category = Category::create([
-            'name' => $request->name
-        ]);
+        $category = Category::create($validatedData);
 
         return response()->json([
             'message' => 'Category Successfully Created!',
@@ -33,12 +31,20 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        //
+        return CategoryResource::make($category);
     }
 
     public function update(Request $request, Category $category)
     {
-        //
+        $validatedData =  $request->validate([
+            'name' => 'required'
+        ]);
+
+        $category = Category::where('id', $request->id)->update($validatedData);
+        return response()->json([
+            'message' => 'Category Successfully Updated!',
+            'data' => $category
+        ]);
     }
 
     public function destroy(Category $category)

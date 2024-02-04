@@ -5348,12 +5348,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       categories: [],
       form: {
+        id: '',
         name: ''
       },
       error: []
@@ -5393,10 +5395,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 0:
               console.log(_this2.form);
               _context2.prev = 1;
-              _context2.next = 4;
+              if (!(_this2.form.id == '0')) {
+                _context2.next = 8;
+                break;
+              }
+              _context2.next = 5;
               return axios.post('/api/category', _this2.form);
-            case 4:
+            case 5:
               response = _context2.sent;
+              _context2.next = 12;
+              break;
+            case 8:
+              console.log('updated');
+              _context2.next = 11;
+              return axios.put('/api/category/' + _this2.form.id, _this2.form);
+            case 11:
+              response = _context2.sent;
+            case 12:
               if (response.status == 200) {
                 _this2.error = [];
                 _this2.$toasted.show(response.data.message, {
@@ -5406,10 +5421,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this2.getCategories();
                 $(_this2.$refs.addModal).modal('hide');
               }
-              _context2.next = 13;
+              _context2.next = 20;
               break;
-            case 8:
-              _context2.prev = 8;
+            case 15:
+              _context2.prev = 15;
               _context2.t0 = _context2["catch"](1);
               console.log(_context2.t0.response.data.errors);
               _this2.$toasted.show('Please Check Your Input!', {
@@ -5417,14 +5432,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 duration: 3000
               });
               _this2.error = _context2.t0.response.data.errors;
-            case 13:
+            case 20:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[1, 8]]);
+        }, _callee2, null, [[1, 15]]);
       }))();
     },
-    openModal: function openModal() {
+    openModal: function openModal(id) {
+      if (id !== '0') {
+        this.showCategory(id);
+      } else {
+        this.form.id = id;
+      }
       $(this.$refs.addModal).modal('show');
     },
     closeModal: function closeModal() {
@@ -5464,6 +5484,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               return _context3.stop();
           }
         }, _callee3, null, [[0, 7]]);
+      }))();
+    },
+    showCategory: function showCategory(id) {
+      var _this4 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return axios.get('/api/category/' + id);
+            case 2:
+              response = _context4.sent;
+              if (response.status == 200) {
+                console.log(response);
+                _this4.form = {
+                  id: response.data.data.id,
+                  name: response.data.data.name
+                };
+              }
+            case 4:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4);
       }))();
     }
   }
@@ -28791,7 +28836,7 @@ var render = function () {
                 on: {
                   click: function ($event) {
                     $event.preventDefault()
-                    return _vm.openModal.apply(null, arguments)
+                    return _vm.openModal("0")
                   },
                 },
               },
@@ -28819,9 +28864,19 @@ var render = function () {
                       _c("td", [_vm._v(_vm._s(category.created_at))]),
                       _vm._v(" "),
                       _c("td", [
-                        _c("a", { staticClass: "btn btn-primary" }, [
-                          _vm._v("Edit"),
-                        ]),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-primary",
+                            on: {
+                              click: function ($event) {
+                                $event.preventDefault()
+                                return _vm.openModal(category.id)
+                              },
+                            },
+                          },
+                          [_vm._v("Edit")]
+                        ),
                         _vm._v(" "),
                         _c(
                           "a",
@@ -28902,6 +28957,27 @@ var render = function () {
               },
               [
                 _c("div", { staticClass: "modal-body" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.id,
+                        expression: "form.id",
+                      },
+                    ],
+                    attrs: { type: "hidden", name: "id" },
+                    domProps: { value: _vm.form.id },
+                    on: {
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form, "id", $event.target.value)
+                      },
+                    },
+                  }),
+                  _vm._v(" "),
                   _c("div", { staticClass: "form-group" }, [
                     _c("label", { attrs: { for: "name" } }, [
                       _vm._v("Category Name"),
