@@ -19,14 +19,14 @@
             Master Data
         </div>
 
-        <li class="nav-item">
+        <li :class="['nav-item', {'active': isActive('/category')}]">
             <router-link class="nav-link" :to="{name: 'category'}">
                 <i class="fas fa-fw fa-th-large"></i>
                 <span>Category</span>
             </router-link>
         </li>
 
-        <li class="nav-item">
+        <li :class="['nav-item', {'active': isActive('/product')}]">
             <router-link class="nav-link" :to="{name: 'product'}">
                 <i class="fas fa-fw fa-th-large"></i>
                 <span>Product</span>
@@ -39,7 +39,7 @@
             MAIN FEATURE
         </div>
 
-        <li class="nav-item">
+        <li :class="['nav-item', {'active': isActive('/sales')}]">
             <router-link class="nav-link" :to="{name:'sales'}">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Sales Report</span>

@@ -28,8 +28,8 @@
                            <td>{{ category.name }}</td>
                            <td>{{ category.created_at }}</td>
                            <td>
-                              <a class="btn btn-primary" @click.prevent="openModal(category.id)">Edit</a>
-                              <a class="btn btn-danger" @click.prevent="deleteCategory(category.id)">Hapus</a>
+                              <a class="btn btn-primary btn-sm" @click.prevent="openModal(category.id)"><i class="fas fa-fw fa-edit"></i></a>
+                              <a class="btn btn-danger btn-sm" @click.prevent="deleteCategory(category.id)"><i class="fas fa-fw fa-trash-alt"></i></a>
                            </td>
                         </tr>
                      </tbody>

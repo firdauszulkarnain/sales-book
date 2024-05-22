@@ -16,6 +16,7 @@ class ProductResource extends JsonResource
             'name' => $this->pd_name,
             'buyprice' => $this->pd_buyprice,
             'sellprice' =>  $this->pd_sellprice,
+            'stock' => $this->pd_stock,
             'desc' => $this->pd_desc,
             'created_at' => $this->created_at->format('d-m-Y'),
         ];

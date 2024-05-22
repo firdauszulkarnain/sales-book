@@ -3,7 +3,7 @@
         <h1 class="h3 mb-4 text-gray-800">Products</h1>
 
         <div class="row d-flex justify-content-center">
-            <div class="col-lg-10">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header bg-primary">
                         <router-link class="btn btn-light btn-sm px-3 py-2" :to="{name: 'product.form', params: {id : 0}}">
@@ -19,6 +19,7 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Buyprice</th>
                                     <th scope="col">Sellprice</th>
+                                    <th scope="col">Stock</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -29,9 +30,11 @@
                                     <td>{{ product.name }}</td>
                                     <td>{{ formatToRupiah(product.buyprice) }}</td>
                                     <td>{{ formatToRupiah(product.sellprice) }}</td>
+                                    <td>{{ product.stock }}</td>
                                     <td>
-                                        <router-link class="btn btn-primary" :to="{name: 'product.form', params: {id: product.id }}">Edit</router-link>
-                                         <a class="btn btn-danger" @click.prevent="delProduct(product.id)">Hapus</a>
+                                        <a class="btn btn-secondary btn-sm" @click.prevent="openModal(product.id)"><i class="fas fa-fw fa-plus"></i></a>
+                                        <router-link class="btn btn-primary btn-sm" :to="{name: 'product.form', params: {id: product.id }}"><i class="fas fa-fw fa-edit"></i></router-link>
+                                         <a class="btn btn-danger btn-sm" @click.prevent="delProduct(product.id)"><i class="fas fa-fw fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -40,6 +43,31 @@
                 </div>
             </div>
         </div>
+
+         <div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" ref="updateStock">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+               <h5 class="modal-title text-dark">Update Stock</h5>
+               <button type="button" class="close" data-dismiss="modal" @click.prevent="closeModal">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+               </div>
+               <form action="" method="POST" @submit.prevent="submit">
+                  <div class="modal-body">
+                     <input type="hidden" name="id" v-model="form.id">
+                     <div class="form-group">
+                        <label for="stock">Stock</label>
+                        <input type="number" class="form-control" id="stock" autocomplete="off" v-model="form.stock">
+                     </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
     </div>
 
     
@@ -49,7 +77,11 @@
 export default {
     data(){
         return {
-            products: []
+            products: [],
+            form: {
+                id: '',
+                stock: 0,
+            }
         }
     },
     mounted(){
@@ -91,6 +123,38 @@ export default {
             }).format(number);
 
             return formattedNumber;
+        },
+
+        openModal(id) {
+            this.form.id = id;
+            console.log('masuk sini');
+            $(this.$refs.updateStock).modal('show');
+        },
+
+        closeModal() {
+            $(this.$refs.updateStock).modal('hide');
+        },
+
+        async submit(){
+            try {
+                console.log('id'+this.form.id);
+                let response = await axios.put('/api/product/stock/'+this.form.id, this.form);
+                if(response.status == 200){
+                    this.$toasted.show(response.data.message,{
+                        type: 'success',
+                        duration: 3000,
+                    });
+                    this.getProducts();
+                    this.closeModal();
+                }
+            } catch (e) {
+                console.log(e.response.data.errors);
+                this.$toasted.show('Please Check Your Input!',{
+                    type: 'error',
+                    duration: 3000,
+                });
+                this.error = e.response.data.errors;
+            }
         }
     }
 }

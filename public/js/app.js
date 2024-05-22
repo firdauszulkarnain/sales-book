@@ -5785,11 +5785,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      products: []
+      products: [],
+      form: {
+        id: '',
+        stock: 0
+      }
     };
   },
   mounted: function mounted() {
@@ -5859,6 +5891,53 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         currency: 'IDR'
       }).format(number);
       return formattedNumber;
+    },
+    openModal: function openModal(id) {
+      this.form.id = id;
+      console.log('masuk sini');
+      $(this.$refs.updateStock).modal('show');
+    },
+    closeModal: function closeModal() {
+      $(this.$refs.updateStock).modal('hide');
+    },
+    submit: function submit() {
+      var _this3 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+              console.log('id' + _this3.form.id);
+              _context3.next = 4;
+              return axios.put('/api/product/stock/' + _this3.form.id, _this3.form);
+            case 4:
+              response = _context3.sent;
+              if (response.status == 200) {
+                _this3.$toasted.show(response.data.message, {
+                  type: 'success',
+                  duration: 3000
+                });
+                _this3.getProducts();
+                _this3.closeModal();
+              }
+              _context3.next = 13;
+              break;
+            case 8:
+              _context3.prev = 8;
+              _context3.t0 = _context3["catch"](0);
+              console.log(_context3.t0.response.data.errors);
+              _this3.$toasted.show('Please Check Your Input!', {
+                type: 'error',
+                duration: 3000
+              });
+              _this3.error = _context3.t0.response.data.errors;
+            case 13:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3, null, [[0, 8]]);
+      }))();
     }
   }
 });
@@ -28528,7 +28607,7 @@ var render = function () {
       _vm._v(" "),
       _c(
         "li",
-        { staticClass: "nav-item" },
+        { class: ["nav-item", { active: _vm.isActive("/category") }] },
         [
           _c(
             "router-link",
@@ -28545,7 +28624,7 @@ var render = function () {
       _vm._v(" "),
       _c(
         "li",
-        { staticClass: "nav-item" },
+        { class: ["nav-item", { active: _vm.isActive("/product") }] },
         [
           _c(
             "router-link",
@@ -28568,7 +28647,7 @@ var render = function () {
       _vm._v(" "),
       _c(
         "li",
-        { staticClass: "nav-item" },
+        { class: ["nav-item", { active: _vm.isActive("/sales") }] },
         [
           _c(
             "router-link",
@@ -28867,7 +28946,7 @@ var render = function () {
                         _c(
                           "a",
                           {
-                            staticClass: "btn btn-primary",
+                            staticClass: "btn btn-primary btn-sm",
                             on: {
                               click: function ($event) {
                                 $event.preventDefault()
@@ -28875,13 +28954,13 @@ var render = function () {
                               },
                             },
                           },
-                          [_vm._v("Edit")]
+                          [_c("i", { staticClass: "fas fa-fw fa-edit" })]
                         ),
                         _vm._v(" "),
                         _c(
                           "a",
                           {
-                            staticClass: "btn btn-danger",
+                            staticClass: "btn btn-danger btn-sm",
                             on: {
                               click: function ($event) {
                                 $event.preventDefault()
@@ -28889,7 +28968,7 @@ var render = function () {
                               },
                             },
                           },
-                          [_vm._v("Hapus")]
+                          [_c("i", { staticClass: "fas fa-fw fa-trash-alt" })]
                         ),
                       ]),
                     ]
@@ -29400,7 +29479,7 @@ var render = function () {
     _c("h1", { staticClass: "h3 mb-4 text-gray-800" }, [_vm._v("Products")]),
     _vm._v(" "),
     _c("div", { staticClass: "row d-flex justify-content-center" }, [
-      _c("div", { staticClass: "col-lg-10" }, [
+      _c("div", { staticClass: "col-lg-12" }, [
         _c("div", { staticClass: "card" }, [
           _c(
             "div",
@@ -29446,13 +29525,29 @@ var render = function () {
                           _vm._v(_vm._s(_vm.formatToRupiah(product.sellprice))),
                         ]),
                         _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(product.stock))]),
+                        _vm._v(" "),
                         _c(
                           "td",
                           [
                             _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-secondary btn-sm",
+                                on: {
+                                  click: function ($event) {
+                                    $event.preventDefault()
+                                    return _vm.openModal(product.id)
+                                  },
+                                },
+                              },
+                              [_c("i", { staticClass: "fas fa-fw fa-plus" })]
+                            ),
+                            _vm._v(" "),
+                            _c(
                               "router-link",
                               {
-                                staticClass: "btn btn-primary",
+                                staticClass: "btn btn-primary btn-sm",
                                 attrs: {
                                   to: {
                                     name: "product.form",
@@ -29460,13 +29555,13 @@ var render = function () {
                                   },
                                 },
                               },
-                              [_vm._v("Edit")]
+                              [_c("i", { staticClass: "fas fa-fw fa-edit" })]
                             ),
                             _vm._v(" "),
                             _c(
                               "a",
                               {
-                                staticClass: "btn btn-danger",
+                                staticClass: "btn btn-danger btn-sm",
                                 on: {
                                   click: function ($event) {
                                     $event.preventDefault()
@@ -29474,7 +29569,11 @@ var render = function () {
                                   },
                                 },
                               },
-                              [_vm._v("Hapus")]
+                              [
+                                _c("i", {
+                                  staticClass: "fas fa-fw fa-trash-alt",
+                                }),
+                              ]
                             ),
                           ],
                           1
@@ -29490,6 +29589,120 @@ var render = function () {
         ]),
       ]),
     ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        ref: "updateStock",
+        staticClass: "modal fade",
+        attrs: {
+          "data-backdrop": "static",
+          "data-keyboard": "false",
+          tabindex: "-1",
+          "aria-labelledby": "staticBackdropLabel",
+          "aria-hidden": "true",
+        },
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c("h5", { staticClass: "modal-title text-dark" }, [
+                _vm._v("Update Stock"),
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: { type: "button", "data-dismiss": "modal" },
+                  on: {
+                    click: function ($event) {
+                      $event.preventDefault()
+                      return _vm.closeModal.apply(null, arguments)
+                    },
+                  },
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×"),
+                  ]),
+                ]
+              ),
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: { action: "", method: "POST" },
+                on: {
+                  submit: function ($event) {
+                    $event.preventDefault()
+                    return _vm.submit.apply(null, arguments)
+                  },
+                },
+              },
+              [
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.id,
+                        expression: "form.id",
+                      },
+                    ],
+                    attrs: { type: "hidden", name: "id" },
+                    domProps: { value: _vm.form.id },
+                    on: {
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form, "id", $event.target.value)
+                      },
+                    },
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", { attrs: { for: "stock" } }, [_vm._v("Stock")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.stock,
+                          expression: "form.stock",
+                        },
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "number",
+                        id: "stock",
+                        autocomplete: "off",
+                      },
+                      domProps: { value: _vm.form.stock },
+                      on: {
+                        input: function ($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.form, "stock", $event.target.value)
+                        },
+                      },
+                    }),
+                  ]),
+                ]),
+                _vm._v(" "),
+                _vm._m(1),
+              ]
+            ),
+          ]),
+        ]),
+      ]
+    ),
   ])
 }
 var staticRenderFns = [
@@ -29509,8 +29722,22 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Sellprice")]),
         _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Stock")]),
+        _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Action")]),
       ]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        [_vm._v("Save")]
+      ),
     ])
   },
 ]
