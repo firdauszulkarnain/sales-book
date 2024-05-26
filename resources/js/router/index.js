@@ -3,7 +3,8 @@ import Dashboard from '../pages/Dashboard'
 import Category from '../pages/category/Category'
 import Product from '../pages/product/Product'
 import ProductForm from '../pages/product/Form'
-import Sales from '../pages/Sales'
+import Sales from '../pages/sales/Sales'
+import SalesForm from '../pages/sales/SalesForm'
 
 export default {
     linkExactActiveClass: 'active', 
@@ -34,6 +35,11 @@ export default {
             path: '/sales',
             name: 'sales',
             component: Sales,
+        },
+        {
+            path: '/add/sales',
+            name: 'sales.add',
+            component: SalesForm,
         }
     ]
 }

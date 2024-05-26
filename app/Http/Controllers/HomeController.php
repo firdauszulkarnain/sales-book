@@ -13,7 +13,7 @@ class HomeController extends Controller
         ]);
 
         $product = Product::where('id', $product->id)->update([
-            'pd_stock' => $validatedData['stock'],
+            'pd_stock' => $product->pd_stock + $validatedData['stock'],
         ]);
 
         return response()->json([
