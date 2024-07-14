@@ -6,7 +6,7 @@
       
       <div class="row d-flex justify-content-center">
          <div class="col-lg-10">
-            <div class="card">
+            <div class="card mb-5">
                <div class="card-header bg-primary">
                   <button type="button" class="btn btn-light btn-sm px-3 py-2" @click.prevent="openModal('0')">
                      <b>Add Category</b>
@@ -53,7 +53,10 @@
                      <input type="hidden" name="id" v-model="form.id">
                      <div class="form-group">
                         <label for="name">Category Name</label>
-                        <input type="text" class="form-control" id="name" autocomplete="off" v-model="form.name">
+                        <input type="text" :class="['form-control', {'border border-danger' : errors.name}]" id="name" autocomplete="off" v-model="form.name">
+                        <small class="text text-danger" v-if="errors.name">
+                              {{ errors.name[0] }}
+                        </small>
                      </div>
                   </div>
                   <div class="modal-footer">
@@ -67,7 +70,6 @@
 </template>
 
 <script>
-
 export default {
    data(){
       return {
@@ -76,7 +78,7 @@ export default {
             id : '',
             name: '',
          },
-         error: [],
+         errors: [],
       }
    },
 
@@ -96,42 +98,25 @@ export default {
          console.log(this.form);
          try{
             let response;
+            let msg;
             if(this.form.id == '0'){
                response = await axios.post('/api/category', this.form);
+               msg = 'Category Data Successfully Inserted';
             }else{
-               console.log('updated');
                response = await axios.put('/api/category/'+this.form.id, this.form);
+               msg = 'Category Data Successfully Updated'
             }
             if(response.status == 200){
-               this.error = [];
-               this.$toasted.show(response.data.message,{
-                  type: 'success',
-                  duration: 3000,
-               });
+               this.errors = [];
+               this.notif('Success', msg);
+               this.resetForm();
                this.getCategories();
                $(this.$refs.addModal).modal('hide');
             }
          }catch(e){
             console.log(e.response.data.errors);
-            this.$toasted.show('Please Check Your Input!',{
-                type: 'error',
-                duration: 3000,
-            });
-            this.error = e.response.data.errors;
+            this.errors = e.response.data.errors;
          }
-      },
-
-      openModal(id) {
-         if(id !== '0'){
-            this.showCategory(id);
-         }else{
-            this.form.id = id;
-         }
-         $(this.$refs.addModal).modal('show');
-      },
-
-      closeModal() {
-         $(this.$refs.addModal).modal('hide');
       },
 
       async deleteCategory(idCategory){
@@ -162,7 +147,39 @@ export default {
             }
          }
       },
+
+      openModal(id) {
+         if(id !== '0'){
+            this.showCategory(id);
+         }else{
+            this.form.id = id;
+         }
+         $(this.$refs.addModal).modal('show');
+      },
+
+      closeModal() {
+         $(this.$refs.addModal).modal('hide');
+      },
+
+      resetForm() {
+         this.form = {
+            id: '',
+            name: ''
+         };
+      },
+
+      notif(title, msg){
+         this.$swal({
+            icon: 'success',
+            title: title,
+            text: msg,
+            timer: 1000,
+            showConfirmButton: false
+         });
+      }
    },
+
+    
 
    
 }
