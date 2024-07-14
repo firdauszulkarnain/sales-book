@@ -24,8 +24,11 @@ class SalesController extends Controller
             'sl_buyprice' => $product->pd_buyprice,
             'sl_sellprice' => $product->pd_sellprice,
             'sl_qty' => $request->sl_qty,
-            'sl_total' => (int)$product->pd_sellprice + $request->sl_qty
+            'sl_total' => (int)$product->pd_sellprice * $request->sl_qty
         ]);
+
+        $product->pd_stock = $product->pd_stock - $request->sl_qty;
+        $product->save();
         $sales = ['status' => 'ok'];
         return response()->json([
             'message' => 'Sales Successfully Added!',

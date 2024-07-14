@@ -72,20 +72,24 @@ export default {
             try {
                 let response = await axios.post('/api/sales',this.form);
                 if(response.status == 200){
-                    this.$toasted.show(response.data.message,{
-                        type: 'success',
-                        duration: 3000,
-                    });
+                    this.notif('Success', response.data.message, 'success');
                     this.$router.push({name: 'sales'})
                 }
             } catch (e) {
                 console.log(e.response.data.errors);
-                this.$toasted.show('Please Check Your Input!',{
-                    type: 'error',
-                    duration: 3000,
-                });
+                this.notif('Error!', 'Please Check Your Input!', 'error');
                 this.error = e.response.data.errors
             }
+        },
+
+        notif(title, msg, icon = 'success'){
+            this.$swal({
+                icon: icon,
+                title: title,
+                text: msg,
+                timer: 1000,
+                showConfirmButton: false
+            });
         }
     }
 }

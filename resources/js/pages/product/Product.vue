@@ -100,18 +100,12 @@ export default {
            try {
              let response = await axios.delete('/api/product/'+id);
                 if(response.status == 200){
-                    this.$toasted.show(response.data.message,{
-                        type: 'success',
-                        duration: 3000
-                    });
+                    this.notif('Success', response.data.message)
                     this.getProducts();
                 }
            } catch (e) {
                 console.log(e);
-                this.$toasted.show('Error Delete Data',{
-                    type: 'error',
-                    duration: 3000
-                });
+                this.notif('Error', 'Error Delete Data', 'error');
            }
 
         },
@@ -127,7 +121,6 @@ export default {
 
         openModal(id) {
             this.form.id = id;
-            console.log('masuk sini');
             $(this.$refs.updateStock).modal('show');
         },
 
@@ -140,22 +133,42 @@ export default {
                 console.log('id'+this.form.id);
                 let response = await axios.put('/api/product/stock/'+this.form.id, this.form);
                 if(response.status == 200){
-                    this.$toasted.show(response.data.message,{
-                        type: 'success',
-                        duration: 3000,
-                    });
+                    this.notif('Success', response.data.message)
                     this.getProducts();
                     this.closeModal();
                 }
             } catch (e) {
                 console.log(e.response.data.errors);
-                this.$toasted.show('Please Check Your Input!',{
-                    type: 'error',
-                    duration: 3000,
-                });
+                this.notif('Error!', 'Please Check Your Input!', 'error')
                 this.error = e.response.data.errors;
             }
         }
-    }
+    },
+
+     confirmDelete(idProduct){
+         this.$swal({
+         title: 'Are you sure?',
+         text: 'You will not be able to recover this data!',
+         icon: 'warning',
+         showCancelButton: true,
+         confirmButtonColor: '#d33',
+         cancelButtonColor: '#3085d6',
+         confirmButtonText: 'Yes, delete it!'
+         }).then((result) => {
+         if (result.isConfirmed) {
+            this.delProduct(idProduct);
+         }
+         });
+      },
+
+      notif(title, msg, icon = 'success'){
+         this.$swal({
+            icon: icon,
+            title: title,
+            text: msg,
+            timer: 1000,
+            showConfirmButton: false
+         });
+      }
 }
 </script>

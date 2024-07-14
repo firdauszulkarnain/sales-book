@@ -12,3 +12,4 @@ Route::resource('/category', CategoryController::class);
 Route::resource('/product', ProductController::class);
 Route::resource('/sales', SalesController::class);
 Route::put('/product/stock/{product:id}', [HomeController::class, 'update_stock']);
+Route::get('/dashboard', [HomeController::class, 'dashboard']);

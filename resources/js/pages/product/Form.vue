@@ -110,7 +110,7 @@ export default {
 
         async submit(){
             try {
-                 let response;
+                let response;
                 if(this.id > 0){
                     response = await axios.put('/api/product/'+this.id,this.form);
                 }else{
@@ -118,20 +118,24 @@ export default {
                 }
                 if(response.status == 200){
                     this.error = [];
-                    this.$toasted.show(response.data.message,{
-                        type: 'success',
-                        duration: 3000,
-                    });
+                    this.notif('Success', response.data.message, 'success');
                     this.$router.push({name: 'product'})
                 }
             } catch (e) {
                 console.log(e.response.data.errors);
-                this.$toasted.show('Please Check Your Input!',{
-                    type: 'error',
-                    duration: 3000,
-                });
+                this.notif('Error!', 'Please Check Your Input!', 'error');
                 this.errors = e.response.data.errors;
             }
+        },
+
+        notif(title, msg, icon = 'success'){
+            this.$swal({
+                icon: icon,
+                title: title,
+                text: msg,
+                timer: 1000,
+                showConfirmButton: false
+            });
         }
     }
 }

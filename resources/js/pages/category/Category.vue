@@ -29,7 +29,7 @@
                            <td>{{ category.created_at }}</td>
                            <td>
                               <a class="btn btn-primary btn-sm" @click.prevent="openModal(category.id)"><i class="fas fa-fw fa-edit"></i></a>
-                              <a class="btn btn-danger btn-sm" @click.prevent="deleteCategory(category.id)"><i class="fas fa-fw fa-trash-alt"></i></a>
+                              <a class="btn btn-danger btn-sm" @click.prevent="confirmDelete(category.id)"><i class="fas fa-fw fa-trash-alt"></i></a>
                            </td>
                         </tr>
                      </tbody>
@@ -123,18 +123,12 @@ export default {
          try {
             let response = await axios.delete('/api/category/'+idCategory);
             if(response.status == 200){
-               this.$toasted.show(response.data.message,{
-                  type: 'success',
-                  duration: 3000
-               });
+               this.notif('Success', 'Category Data Deleted Successfully');
                this.getCategories();
             }
          } catch (error) {
             console.log(error);
-            this.$toasted.show('Error Delete Data',{
-               type: 'error',
-               duration: 3000
-            });
+            this.notif('Erorr!', 'Error Delete Data Category', 'error');
          }
       },
       async showCategory(id){
@@ -168,9 +162,25 @@ export default {
          };
       },
 
-      notif(title, msg){
+      confirmDelete(idCategory){
          this.$swal({
-            icon: 'success',
+         title: 'Are you sure?',
+         text: 'You will not be able to recover this data!',
+         icon: 'warning',
+         showCancelButton: true,
+         confirmButtonColor: '#d33',
+         cancelButtonColor: '#3085d6',
+         confirmButtonText: 'Yes, delete it!'
+         }).then((result) => {
+         if (result.isConfirmed) {
+            this.deleteCategory(idCategory);
+         }
+         });
+      },
+
+      notif(title, msg, icon = 'success'){
+         this.$swal({
+            icon: icon,
             title: title,
             text: msg,
             timer: 1000,

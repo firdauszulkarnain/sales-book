@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    public function dashboard(){
+        $data = [
+            'totCat' => Category::count(),
+            'totProduct' =>  Product::count()
+        ];
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
     public function update_stock(Product $product, Request $request){
         $validatedData = $request->validate([
             'stock' => 'required',
