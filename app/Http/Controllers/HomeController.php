@@ -11,7 +11,8 @@ class HomeController extends Controller
     public function dashboard(){
         $data = [
             'totCat' => Category::count(),
-            'totProduct' =>  Product::count()
+            'totProduct' =>  Product::count(),
+            'totStock' => Product::sum('pd_stock'),
         ];
 
         return response()->json([

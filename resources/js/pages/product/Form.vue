@@ -9,7 +9,7 @@
                              <div class="form-group">
                                 <label for="pd_name">Product Name</label>
                                 <input type="text" :class="['form-control', {'is-invalid' : errors.pd_name}]" id="pd_name" autocomplete="off" v-model="form.pd_name">
-                                 <div class="invalid-feedback" v-if="errors.pd_name">
+                                <div class="invalid-feedback" v-if="errors.pd_name">
                                     {{ errors.pd_name[0] }}
                                 </div>
                             </div>
@@ -20,24 +20,24 @@
                                         {{category.name}}
                                     </option>
                                 </select>
-                                 <div class="invalid-feedback" v-if="errors.category_id">
+                                <div class="invalid-feedback" v-if="errors.category_id">
                                     {{ errors.category_id[0] }}
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="pd_buyprice">Product Buyprice</label>
-                                    <input type="text" :class="['form-control', {'is-invalid' : errors.pd_buyprice}]" id="pd_buyprice" autocomplete="off" v-model="form.pd_buyprice">
-                                     <div class="invalid-feedback" v-if="errors.pd_buyprice">
-                                    {{ errors.pd_buyprice[0] }}
-                                </div>
+                                    <input type="text" :class="['form-control', {'is-invalid' : errors.pd_buyprice}]" id="pd_buyprice" autocomplete="off" v-model="form.pd_buyprice" @input="formatRupiah('pd_buyprice')">
+                                    <div class="invalid-feedback" v-if="errors.pd_buyprice">
+                                        {{ errors.pd_buyprice[0] }}
+                                    </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="pd_sellprice">Product Sellprice</label>
                                     <input type="text" :class="['form-control', {'is-invalid' : errors.pd_sellprice}]" id="pd_sellprice" autocomplete="off" v-model="form.pd_sellprice">
-                                     <div class="invalid-feedback" v-if="errors.pd_sellprice">
-                                    {{ errors.pd_sellprice[0] }}
-                                </div>
+                                    <div class="invalid-feedback" v-if="errors.pd_sellprice">
+                                        {{ errors.pd_sellprice[0] }}
+                                    </div>
                                 </div>
                             </div>
                              <div class="form-group">
@@ -136,6 +136,23 @@ export default {
                 timer: 1000,
                 showConfirmButton: false
             });
+        },
+
+        formatRupiah(field) {
+            let value = this.form[field].replace(/[^,\d]/g, "").toString();
+            
+            let split = value.split(",");
+            let remainder = split[0].length % 3;
+            let rupiah = split[0].substr(0, remainder);
+            let thousand = split[0].substr(remainder).match(/\d{3}/gi);
+            
+            if (thousand) {
+                let separator = remainder ? "." : "";
+                rupiah += separator + thousand.join(".");
+            }
+            
+            this.form[field] = split[1] !== undefined ? rupiah + "," + split[1] : rupiah;
+            
         }
     }
 }

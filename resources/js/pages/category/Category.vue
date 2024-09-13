@@ -39,13 +39,13 @@
          </div>
       </div>
 
-      <div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" ref="addModal">
+      <div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" ref="addModal">
          <div class="modal-dialog">
             <div class="modal-content">
                <div class="modal-header">
                <h5 class="modal-title text-dark">Add Category</h5>
                <button type="button" class="close" data-dismiss="modal" @click.prevent="closeModal">
-                  <span aria-hidden="true">&times;</span>
+                  <span>&times;</span>
                </button>
                </div>
                <form action="" method="POST" @submit.prevent="submit">

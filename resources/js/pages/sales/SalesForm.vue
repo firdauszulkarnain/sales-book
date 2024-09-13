@@ -20,7 +20,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-8">
                                     <label for="sl_sellprice">Sellprice</label>
-                                    <input type="text" :class="['form-control', {'is-invalid' : errors.sl_sellprice}]" id="sl_sellprice" autocomplete="off" v-model="form.sl_sellprice">
+                                    <input type="text" :class="['form-control', {'is-invalid' : errors.sl_sellprice}]" id="sl_sellprice" autocomplete="off" v-model="form.sl_sellprice" @input="formatRupiah('sl_sellprice')">
                                      <div class="invalid-feedback" v-if="errors.sl_sellprice">
                                     {{ errors.sl_sellprice[0] }}
                                 </div>
@@ -90,6 +90,23 @@ export default {
                 timer: 1000,
                 showConfirmButton: false
             });
+        },
+
+        formatRupiah(field) {
+            let value = this.form[field].replace(/[^,\d]/g, "").toString();
+            
+            let split = value.split(",");
+            let remainder = split[0].length % 3;
+            let rupiah = split[0].substr(0, remainder);
+            let thousand = split[0].substr(remainder).match(/\d{3}/gi);
+            
+            if (thousand) {
+                let separator = remainder ? "." : "";
+                rupiah += separator + thousand.join(".");
+            }
+            
+            this.form[field] = split[1] !== undefined ? rupiah + "," + split[1] : rupiah;
+            
         }
     }
 }

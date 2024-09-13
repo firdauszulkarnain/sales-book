@@ -5138,7 +5138,8 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
   data: function data() {
     return {
       totalCategory: 0,
-      totalProduct: 0
+      totalProduct: 0,
+      totalStock: 0
     };
   },
   mounted: function mounted() {
@@ -5159,17 +5160,18 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               response = _context.sent;
               _this.totalCategory = response.data.data.totCat;
               _this.totalProduct = response.data.data.totProduct;
-              _context.next = 11;
+              _this.totalStock = response.data.data.totStock;
+              _context.next = 12;
               break;
-            case 8:
-              _context.prev = 8;
+            case 9:
+              _context.prev = 9;
               _context.t0 = _context["catch"](0);
               console.error('Error fetching counts:', _context.t0);
-            case 11:
+            case 12:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[0, 8]]);
+        }, _callee, null, [[0, 9]]);
       }))();
     }
   }
@@ -5525,6 +5527,18 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         timer: 1000,
         showConfirmButton: false
       });
+    },
+    formatRupiah: function formatRupiah(field) {
+      var value = this.form[field].replace(/[^,\d]/g, "").toString();
+      var split = value.split(",");
+      var remainder = split[0].length % 3;
+      var rupiah = split[0].substr(0, remainder);
+      var thousand = split[0].substr(remainder).match(/\d{3}/gi);
+      if (thousand) {
+        var separator = remainder ? "." : "";
+        rupiah += separator + thousand.join(".");
+      }
+      this.form[field] = split[1] !== undefined ? rupiah + "," + split[1] : rupiah;
     }
   }
 });
@@ -5639,9 +5653,9 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
             case 4:
               response = _context3.sent;
               if (response.status == 200) {
-                _this3.notif('Success', response.data.message);
                 _this3.getProducts();
                 _this3.closeModal();
+                _this3.notif('Success', 'Berhasil Update Stock');
               }
               _context3.next = 13;
               break;
@@ -5657,33 +5671,39 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
           }
         }, _callee3, null, [[0, 8]]);
       }))();
+    },
+    confirmDelete: function confirmDelete(idProduct) {
+      var _this4 = this;
+      this.$swal({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this data!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          _this4.delProduct(idProduct);
+          _this4.notif("Success", "success");
+        }
+      });
+    },
+    notif: function notif(title, msg) {
+      var icon = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'success';
+      console.log('notif called with:', {
+        title: title,
+        msg: msg,
+        icon: icon
+      });
+      this.$swal({
+        icon: icon,
+        title: title,
+        text: msg,
+        timer: 1000,
+        showConfirmButton: false
+      });
     }
-  },
-  confirmDelete: function confirmDelete(idProduct) {
-    var _this4 = this;
-    this.$swal({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this data!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    }).then(function (result) {
-      if (result.isConfirmed) {
-        _this4.delProduct(idProduct);
-      }
-    });
-  },
-  notif: function notif(title, msg) {
-    var icon = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'success';
-    this.$swal({
-      icon: icon,
-      title: title,
-      text: msg,
-      timer: 1000,
-      showConfirmButton: false
-    });
   }
 });
 
@@ -5841,6 +5861,18 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         timer: 1000,
         showConfirmButton: false
       });
+    },
+    formatRupiah: function formatRupiah(field) {
+      var value = this.form[field].replace(/[^,\d]/g, "").toString();
+      var split = value.split(",");
+      var remainder = split[0].length % 3;
+      var rupiah = split[0].substr(0, remainder);
+      var thousand = split[0].substr(remainder).match(/\d{3}/gi);
+      if (thousand) {
+        var separator = remainder ? "." : "";
+        rupiah += separator + thousand.join(".");
+      }
+      this.form[field] = split[1] !== undefined ? rupiah + "," + split[1] : rupiah;
     }
   }
 });
@@ -6122,7 +6154,21 @@ var render = function render() {
     staticClass: "text-xs font-weight-bold text-primary text-uppercase mb-1"
   }, [_vm._v("\n                            Product")]), _vm._v(" "), _c("div", {
     staticClass: "h5 mb-0 font-weight-bold text-gray-800"
-  }, [_vm.totalProduct > 10 ? _c("span", [_vm._v("\n                                    " + _vm._s(_vm.totalProduct) + "\n                                ")]) : _c("span", [_vm._v("\n                                    0" + _vm._s(_vm.totalProduct) + "\n                                ")])])]), _vm._v(" "), _vm._m(2)])])])])])]);
+  }, [_vm.totalProduct > 10 ? _c("span", [_vm._v("\n                                    " + _vm._s(_vm.totalProduct) + "\n                                ")]) : _c("span", [_vm._v("\n                                    0" + _vm._s(_vm.totalProduct) + "\n                                ")])])]), _vm._v(" "), _vm._m(2)])])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-xl-3 col-md-6 mb-4"
+  }, [_c("div", {
+    staticClass: "card border-left-primary shadow h-100 py-2"
+  }, [_c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row no-gutters align-items-center"
+  }, [_c("div", {
+    staticClass: "col mr-2"
+  }, [_c("div", {
+    staticClass: "text-xs font-weight-bold text-primary text-uppercase mb-1"
+  }, [_vm._v("\n                            Total Stock")]), _vm._v(" "), _c("div", {
+    staticClass: "h5 mb-0 font-weight-bold text-gray-800"
+  }, [_vm.totalStock > 10 ? _c("span", [_vm._v("\n                                    " + _vm._s(_vm.totalStock) + "\n                                ")]) : _c("span", [_vm._v("\n                                    0" + _vm._s(_vm.totalStock) + "\n                                ")])])]), _vm._v(" "), _vm._m(3)])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -6132,6 +6178,14 @@ var staticRenderFns = [function () {
   }, [_c("h1", {
     staticClass: "h3 mb-4 text-gray-800"
   }, [_vm._v("Dashboard")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "col-auto"
+  }, [_c("i", {
+    staticClass: "fas fa-th-large fa-2x text-gray-300"
+  })]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -6230,8 +6284,7 @@ var render = function render() {
       "data-backdrop": "static",
       "data-keyboard": "false",
       tabindex: "-1",
-      "aria-labelledby": "staticBackdropLabel",
-      "aria-hidden": "true"
+      "aria-labelledby": "staticBackdropLabel"
     }
   }, [_c("div", {
     staticClass: "modal-dialog"
@@ -6253,11 +6306,7 @@ var render = function render() {
         return _vm.closeModal.apply(null, arguments);
       }
     }
-  }, [_c("span", {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_vm._v("×")])])]), _vm._v(" "), _c("form", {
+  }, [_c("span", [_vm._v("×")])])]), _vm._v(" "), _c("form", {
     attrs: {
       action: "",
       method: "POST"
@@ -6501,14 +6550,16 @@ var render = function render() {
       value: _vm.form.pd_buyprice
     },
     on: {
-      input: function input($event) {
+      input: [function ($event) {
         if ($event.target.composing) return;
         _vm.$set(_vm.form, "pd_buyprice", $event.target.value);
-      }
+      }, function ($event) {
+        return _vm.formatRupiah("pd_buyprice");
+      }]
     }
   }), _vm._v(" "), _vm.errors.pd_buyprice ? _c("div", {
     staticClass: "invalid-feedback"
-  }, [_vm._v("\n                                " + _vm._s(_vm.errors.pd_buyprice[0]) + "\n                            ")]) : _vm._e()]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                    " + _vm._s(_vm.errors.pd_buyprice[0]) + "\n                                ")]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-6"
   }, [_c("label", {
     attrs: {
@@ -6540,7 +6591,7 @@ var render = function render() {
     }
   }), _vm._v(" "), _vm.errors.pd_sellprice ? _c("div", {
     staticClass: "invalid-feedback"
-  }, [_vm._v("\n                                " + _vm._s(_vm.errors.pd_sellprice[0]) + "\n                            ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                    " + _vm._s(_vm.errors.pd_sellprice[0]) + "\n                                ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
     staticClass: "form-group"
   }, [_c("label", {
     attrs: {
@@ -6996,10 +7047,12 @@ var render = function render() {
       value: _vm.form.sl_sellprice
     },
     on: {
-      input: function input($event) {
+      input: [function ($event) {
         if ($event.target.composing) return;
         _vm.$set(_vm.form, "sl_sellprice", $event.target.value);
-      }
+      }, function ($event) {
+        return _vm.formatRupiah("sl_sellprice");
+      }]
     }
   }), _vm._v(" "), _vm.errors.sl_sellprice ? _c("div", {
     staticClass: "invalid-feedback"

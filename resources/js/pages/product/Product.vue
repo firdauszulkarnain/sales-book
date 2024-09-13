@@ -133,19 +133,18 @@ export default {
                 console.log('id'+this.form.id);
                 let response = await axios.put('/api/product/stock/'+this.form.id, this.form);
                 if(response.status == 200){
-                    this.notif('Success', response.data.message)
                     this.getProducts();
                     this.closeModal();
+                    this.notif('Success','Berhasil Update Stock')
                 }
             } catch (e) {
                 console.log(e.response.data.errors);
                 this.notif('Error!', 'Please Check Your Input!', 'error')
                 this.error = e.response.data.errors;
             }
-        }
-    },
+        },
 
-     confirmDelete(idProduct){
+        confirmDelete(idProduct){
          this.$swal({
          title: 'Are you sure?',
          text: 'You will not be able to recover this data!',
@@ -157,11 +156,13 @@ export default {
          }).then((result) => {
          if (result.isConfirmed) {
             this.delProduct(idProduct);
+            this.notif("Success", "success")
          }
          });
       },
 
       notif(title, msg, icon = 'success'){
+         console.log('notif called with:', { title, msg, icon });
          this.$swal({
             icon: icon,
             title: title,
@@ -170,5 +171,8 @@ export default {
             showConfirmButton: false
          });
       }
+    },
+
+     
 }
 </script>
