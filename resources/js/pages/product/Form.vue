@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="pd_sellprice">Product Sellprice</label>
-                                    <input type="text" :class="['form-control', {'is-invalid' : errors.pd_sellprice}]" id="pd_sellprice" autocomplete="off" v-model="form.pd_sellprice">
+                                    <input type="text" :class="['form-control', {'is-invalid' : errors.pd_sellprice}]" id="pd_sellprice" autocomplete="off" v-model="form.pd_sellprice"  @input="formatRupiah('pd_sellprice')">
                                     <div class="invalid-feedback" v-if="errors.pd_sellprice">
                                         {{ errors.pd_sellprice[0] }}
                                     </div>

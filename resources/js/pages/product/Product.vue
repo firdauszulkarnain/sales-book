@@ -6,9 +6,18 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header bg-primary">
-                        <router-link class="btn btn-light btn-sm px-3 py-2" :to="{name: 'product.form', params: {id : 0}}">
-                            <b>Add Product</b>
-                        </router-link>
+                       <div class="row">
+                            <div class="col-lg-6">
+                                <router-link class="btn btn-light btn-sm px-3 py-2" :to="{name: 'product.form', params: {id : 0}}">
+                                    <b>Add Product</b>
+                                </router-link>
+                            </div>
+                            <div class="col-lg-2">
+                            </div>
+                            <div class="col-lg-4">
+                                <input type="text" v-model="keyword" class="form-control" placeholder="Search Here...." @input="getProducts(1)">
+                            </div>
+                       </div>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped text-center">
@@ -34,11 +43,26 @@
                                     <td>
                                         <a class="btn btn-secondary btn-sm" @click.prevent="openModal(product.id)"><i class="fas fa-fw fa-plus"></i></a>
                                         <router-link class="btn btn-primary btn-sm" :to="{name: 'product.form', params: {id: product.id }}"><i class="fas fa-fw fa-edit"></i></router-link>
-                                         <a class="btn btn-danger btn-sm" @click.prevent="delProduct(product.id)"><i class="fas fa-fw fa-trash-alt"></i></a>
+                                         <a class="btn btn-danger btn-sm" @click.prevent="confirmDelete(product.id)"><i class="fas fa-fw fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item" :class="{ disabled: pagination.current_page === 1 }">
+                                    <a class="page-link" href="#" @click.prevent="getProducts(pagination.current_page - 1)">Previous</a>
+                                </li>
+
+                                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === pagination.current_page }">
+                                    <a class="page-link" href="#" @click.prevent="getProducts(page)">{{ page }}</a>
+                                </li>
+
+                                <li class="page-item" :class="{ disabled: pagination.current_page === pagination.last_page }">
+                                    <a class="page-link" href="#" @click.prevent="getProducts(pagination.current_page + 1)">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -81,18 +105,27 @@ export default {
             form: {
                 id: '',
                 stock: 0,
-            }
+            },
+            pagination: {},
+            keyword: '',
         }
     },
     mounted(){
         this.getProducts()
     },
 
+    computed:{
+        totalPages() {
+            return Array.from({ length: this.pagination.last_page }, (v, k) => k + 1);
+        },
+    },
+
     methods:{
-        async getProducts(){
-           let response = await axios.get('/api/product');
+        async getProducts(page=1){
+            let response = await axios.get(`/api/product?page=${page}&search=${this.keyword}`);
             if(response.status == 200){
                 this.products = response.data.data;
+                this.pagination = response.data.meta;
             }
         },
 
@@ -156,7 +189,6 @@ export default {
          }).then((result) => {
          if (result.isConfirmed) {
             this.delProduct(idProduct);
-            this.notif("Success", "success")
          }
          });
       },

@@ -9,9 +9,14 @@ use App\Http\Resources\ProductResource;
 class ProductController extends Controller
 {
    
-    public function index()
+    public function index(Request $request)
     {
-        $product = Product::latest()->get();
+        $keyword = $request->input('search');
+        if($keyword){
+            $product = Product::where('lower(pd_name)', 'like' ,  '%'.$keyword.'%')->paginate(3);
+        }else{
+            $product = Product::latest()->paginate(3);
+        }
         return ProductResource::collection($product);
     }
 
@@ -19,6 +24,8 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validatedData =  $this->validateData($request);
+        $validatedData['pd_buyprice'] = str_replace('.', '', $validatedData['pd_buyprice']);
+        $validatedData['pd_sellprice'] = str_replace('.', '', $validatedData['pd_sellprice']);
         $product = Product::create($validatedData);
         return response()->json([
             'message' => 'Product Successfully Created!',
@@ -36,6 +43,8 @@ class ProductController extends Controller
     public function update(Product $product, Request $request)
     {
         $validatedData = $this->validateData($request);
+        $validatedData['pd_buyprice'] = str_replace('.', '', $validatedData['pd_buyprice']);
+        $validatedData['pd_sellprice'] = str_replace('.', '', $validatedData['pd_sellprice']);
         $product = Product::where('id', $product->id)->update($validatedData);
         return response()->json([
             'message' => 'Product Successfully Updated!',
@@ -57,8 +66,8 @@ class ProductController extends Controller
         $rules = [
             'category_id' => 'required',
             'pd_name' => 'required',
-            'pd_buyprice' => 'required|numeric',
-            'pd_sellprice' => 'required|numeric',
+            'pd_buyprice' => 'required',
+            'pd_sellprice' => 'required',
             'pd_desc' => 'required',
         ];
 
@@ -68,8 +77,6 @@ class ProductController extends Controller
             'pd_buyprice.required' => 'Product Buyprice field is required!',
             'pd_sellprice.required' => 'Product Sellprice field is required!',
             'pd_desc.required' => 'Product Description field is required!',
-            'pd_buyprice.numeric' => 'Product Buyprice must be a number!',
-            'pd_sellprice.numeric' => 'Product Sellprice must be a number!',
         ];
 
         return $request->validate($rules, $message);
